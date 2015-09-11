@@ -2,9 +2,101 @@
 <html>
 <head>
     <title></title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-2.1.4.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="default.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.entrySlicer = getQueryStringParameter("entry");
+            if (entrySlicer == undefined) {
+                entrySlicer = 0;
+                window.history.pushState("page1", "", "?entry=0");
+            }
+            else if (entrySlicer < 0) {
+                entrySlicer = 0;
+                window.history.pushState("page1", "", "?entry=0");
+            }
+
+            $("#lnkPrevious").attr("href", "?entry=" + (Number(entrySlicer) - 100));
+            $("#lnkNext").attr("href", "?entry=" + (Number(entrySlicer) + 100));
+
+            $.ajax({
+                type: "GET",
+                url: "products.xml",
+                dataType: "xml",
+                success: xmlParser
+            });
+        });
+
+        function xmlParser(xml) {
+            console.log(xml);
+            var oneThousandBreak = 0;
+            $(xml).find("artikel").slice(entrySlicer).each(function () {
+                $("table tbody").append("<tr class='artikel'></tr>");
+                $("table tbody tr").last().append("<td>" + $(this).find("Artikelid").text() + "</td>");
+                $("table tbody tr").last().append("<td>" + $(this).find("Namn").text() + "</td>");
+                $("table tbody tr").last().append("<td>" + $(this).find("Volymiml").text() + "</td>");
+                $("table tbody tr").last().append("<td>" + $(this).find("Alkoholhalt").text() + "</td>");
+                $("table tbody tr").last().append("<td>" + $(this).find("Prisinklmoms").text() + "</td>");
+                $("table tbody tr").last().append("<td>" + $(this).find("PrisPerLiter").text() + "</td>");
+                oneThousandBreak++;
+                if (oneThousandBreak == 100) {
+                    return false;
+                }
+
+            });
+
+            $("#loadDiv").hide();
+        }
+
+        // Get querystring.
+        function getQueryStringParameter(param) {
+            try {
+                var params = document.URL.split("?")[1].split("&");
+                var strParams = "";
+                for (var i = 0; i < params.length; i = i + 1) {
+                    var singleParam = params[i].split("=");
+                    if (singleParam[0] == param) {
+                        return singleParam[1];
+                    }
+                }
+            } catch (e) {
+
+            }
+        }
+    </script>
 </head>
 <body>
+    <section>
+        <header class="container">Systemet APK</header>
+        <main>
+            <div class="container" id="loadDiv">Pouring the good stuff. Please hold....</div>
+            <div class="container">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Artikel ID:</th>
+                            <th>Namn:</th>
+                            <th>Volym (ml):</th>
+                            <th>Alkoholhalt:</th>
+                            <th>Pris (inkl moms):</th>
+                            <th>Pris per liter:</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
 
+                <nav>
+                    <ul class="pager">
+                        <li><a id="lnkPrevious">Previous</a></li>
+                        <li><a id="lnkNext">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </main>
+    </section>
 </body>
 </html>

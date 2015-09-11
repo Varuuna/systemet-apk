@@ -1,0 +1,19 @@
+﻿body {
+}
+header{
+    font-family:Calibri;
+    font-size:48px;
+    padding-top:50px;
+}
+
+table{
+    margin-top:50px;
+}
+th, td{
+    margin: 10px;
+}
+
+#loadDiv{
+    font-family:Calibri;
+    font-size:32px;
+}
