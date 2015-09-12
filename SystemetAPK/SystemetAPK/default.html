@@ -7,7 +7,7 @@
     <script src="Scripts/bootstrap.min.js"></script>
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
     <link href="default.css" rel="stylesheet" />
-
+    <script src="Scripts/main.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             window.entrySlicer = getQueryStringParameter("entry");
@@ -27,30 +27,9 @@
                 type: "GET",
                 url: "products.xml",
                 dataType: "xml",
-                success: xmlParser
+                success: loopParser
             });
         });
-
-        function xmlParser(xml) {
-            console.log(xml);
-            var oneThousandBreak = 0;
-            $(xml).find("artikel").slice(entrySlicer).each(function () {
-                $("table tbody").append("<tr class='artikel'></tr>");
-                $("table tbody tr").last().append("<td>" + $(this).find("Artikelid").text() + "</td>");
-                $("table tbody tr").last().append("<td>" + $(this).find("Namn").text() + "</td>");
-                $("table tbody tr").last().append("<td>" + $(this).find("Volymiml").text() + "</td>");
-                $("table tbody tr").last().append("<td>" + $(this).find("Alkoholhalt").text() + "</td>");
-                $("table tbody tr").last().append("<td>" + $(this).find("Prisinklmoms").text() + "</td>");
-                $("table tbody tr").last().append("<td>" + $(this).find("PrisPerLiter").text() + "</td>");
-                oneThousandBreak++;
-                if (oneThousandBreak == 100) {
-                    return false;
-                }
-
-            });
-
-            $("#loadDiv").hide();
-        }
 
         // Get querystring.
         function getQueryStringParameter(param) {
